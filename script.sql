@@ -1,7 +1,7 @@
 create database igreja_db;
 use igreja_db;
 
-create table graca (
+create table agradecimentos (
 	id_gra int auto_increment primary key,
     nome_gra varchar(252),
     motivos_gra text,
@@ -22,7 +22,7 @@ create table pedidos (
 	data_ped date
 );
 
-create table vistantes (
+create table visitantes (
 	id_vis int auto_increment primary key,
     nome_vis varchar(252),
     descricao_vis text,
