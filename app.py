@@ -29,7 +29,7 @@ def gracas():
 
     if request.method == 'POST':
         nome = request.form['nome']
-        agradecimento = request.form['agradecimento']
+        agradecimento = request.form['motivo']
 
         my_cursor = mybd.cursor()
         my_cursor.execute("INSERT INTO agradecimentos (nome, agradecimento) VALUES (%s, %s)", (nome, agradecimento))
