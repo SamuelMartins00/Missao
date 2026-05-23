@@ -6,6 +6,16 @@
     <div>
         <h1>Pedidos de Oração</h1>
     </div>
+
+    <form action="/pedidos" method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="pedido">Pedido:</label>
+        <input type="text" id="pedido" name="pedido">
+
+        <button type="submit">Enviar</button>
+    </form>
 </body>
 
 {% endblock %}

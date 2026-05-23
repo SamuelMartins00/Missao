@@ -4,8 +4,18 @@
 
 <body>
     <div>
-        <h1>Ação de Graça</h1>
+        <h1>Culto em ação de graça</h1>
     </div>
+
+    <form action="/agradecimentos" method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="motivo">Motivo:</label>
+        <input type="text" id="motivo" name="motivo">
+
+        <button type="submit">Enviar</button>
+    </form>
 </body>
 
 {% endblock %}

@@ -8,19 +8,21 @@ load_dotenv()
 app = Flask(__name__)
 
 # Conexão com o banco de dados
-mybd = mysql.connector.connect(
+conexao = mysql.connector.connect(
         host=os.getenv('DB_HOST'),
         user=os.getenv('DB_USER'),
         password=os.getenv('DB_PASSWORD'),
         database=os.getenv('DB_NAME')
     )
 
+my_cursor = conexao.cursor()
+
 @app.route('/', methods=['GET'])
 def index():
 
-    my_cursor = mybd.cursor()
+    my_cursor = conexao.cursor()
     my_cursor.execute("SELECT * FROM avisos")
-    avisos = my_cursor.fetchall()
+    result = my_cursor.fetchall()
 
     return render_template('index.html', avisos=avisos)
 
@@ -28,16 +30,25 @@ def index():
 def gracas():
 
     if request.method == 'POST':
-        nome = request.form['nome']
-        agradecimento = request.form['motivo']
+        nome = request.form['titulo']
+        motivo = request.form['motivo']
 
-        my_cursor = mybd.cursor()
-        my_cursor.execute("INSERT INTO agradecimentos (nome, agradecimento) VALUES (%s, %s)", (nome, agradecimento))
-        my_cursor.commit()
+        try:
+            my_cursor = conexao.cursor()
+            comando = ("INSERT INTO agradecimentos (titulo_agr, motivo_agr) VALUES (%s, %s)")
+            valores = (nome, motivo)
+
+            my_cursor.execute(comando, valores)
+            my_cursor.commit()
+
+            return "Culto em ação de graça enviado com sucesso !"
         
-    my_cursor = mybd.cursor()
+        except Exception as e:
+            return f"Erro ao conectar ou enviar: {e}"
+
+    my_cursor = conexao.cursor()
     my_cursor.execute("SELECT * FROM agradecimentos")
-    agradecimentos = my_cursor.fetchall()
+    result = my_cursor.fetchall()
 
     return render_template('agradecimentos.html', agradecimentos=agradecimentos)
 
@@ -48,13 +59,22 @@ def avisos():
         titulo = request.form['titulo']
         descricao = request.form['descricao']
 
-        my_cursor = mybd.cursor()
-        my_cursor.execute("INSERT INTO avisos (titulo, descricao) VALUES (%s, %s)", (titulo, descricao))
-        my_cursor.commit()
+        try:
+            my_cursor = conexao.cursor()
+            comando = ("INSERT INTO avisos (titulo_avi, descricao_avi) VALUES (%s, %s)")
+            valores = (titulo, descricao)
 
-    my_cursor = mybd.cursor()
+            my_cursor.execute(comando, valores)
+            my_cursor.commit()
+
+            return "Aviso enviado com sucesso !"
+        
+        except Exception as e:
+            return f"Erro ao conectar ou enviar: {e}"
+
+    my_cursor = conexao.cursor()
     my_cursor.execute("SELECT * FROM avisos")
-    avisos = my_cursor.fetchall()
+    result = my_cursor.fetchall()
 
     return render_template('avisos.html', avisos=avisos)
 
@@ -63,15 +83,24 @@ def pedidos():
 
     if request.method == 'POST':
         nome = request.form['nome']
-        pedido = request.form['pedido']
+        pedido = request.form['motivo']
 
-        my_cursor = mybd.cursor()
-        my_cursor.execute("INSERT INTO pedidos (nome, pedido) VALUES (%s, %s)", (nome, pedido))
-        my_cursor.commit()
+        try:
+            my_cursor = conexao.cursor()
+            comando = ("INSERT INTO pedidos (nome_ped, motivo_ped) VALUES (%s, %s)")
+            valores = (nome, pedido)
 
-    my_cursor = mybd.cursor()
+            my_cursor.execute(comando, valores)
+            my_cursor.commit()
+
+            return "Pedido enviado com sucesso !"
+
+        except Exception as e:
+            return f"Erro ao conectar ou enviar: {e}"
+
+    my_cursor = conexao.cursor()
     my_cursor.execute("SELECT * FROM pedidos")
-    pedidos = my_cursor.fetchall()
+    result = my_cursor.fetchall()
 
     return render_template('pedidos.html', pedidos=pedidos)
 
@@ -79,14 +108,26 @@ def pedidos():
 def visitantes():
     if request.method == 'POST':
         nome = request.form['nome']
-        motivo = request.form['motivo']
+        descricao = request.form['descricao']
 
-        my_cursor = mybd.cursor()
-        my_cursor.execute("INSERT INTO visitantes (nome, motivo) VALUES (%s, %s)", (nome, motivo))
-        my_cursor.commit()
+        try:
+            my_cursor = conexao.cursor()
+            comando = ("INSERT INTO visitantes (nome_vis, descricao_vis) VALUES (%s, %s)")
+            valores = (nome, descricao)
 
-    my_cursor = mybd.cursor()
+            my_cursor.execute(comando, valores)
+            my_cursor.commit()
+
+            return "Visitante avisado com sucesso !"
+
+        except Exception as e:
+            return f"Erro ao conectar ou enviar: {e}"
+
+    my_cursor = conexao.cursor()
     my_cursor.execute("SELECT * FROM visitantes")
-    visitantes = my_cursor.fetchall()
+    result = my_cursor.fetchall()
 
     return render_template('visitantes.html', visitantes=visitantes)
+
+my_cursor.close()
+conexao.close()

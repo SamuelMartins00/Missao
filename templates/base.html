@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Sistema Igreja</title>
 </head>
+
 <body class="bg-gray-100">
 
-<nav class="bg-blue-600 p-4 text-white flex gap-4">
-    <a href="/agradecimentos">Ação de Graça</a>
-    <a href="/avisos">Avisos</a>
-    <a href="/pedidos">Pedidos</a>
-    <a href="/visitantes">Visitantes</a>
-</nav>
+    <nav class="bg-blue-600 p-4 text-white flex gap-4">
+        <a href="/avisos">Avisos</a>
+        <a href="/agradecimentos">Culto em ação de graça</a>
+        <a href="/pedidos">Pedidos</a>
+        <a href="/visitantes">Visitantes</a>
+    </nav>
 
-<div class="p-6">
-    {% block content %}{% endblock %}
-</div>
+    <div class="p-6">
+        {% block content %}{% endblock %}
+    </div>
 
 </body>
+
 </html>
