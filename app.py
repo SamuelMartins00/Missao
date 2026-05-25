@@ -24,7 +24,7 @@ def get_connection():
 @app.route('/', methods=['GET'])
 def index():
     conexao = get_connection()
-    my_cursor = conexao.cursor()
+    my_cursor = conexao.cursor(dictionary=True)
 
     try:
         my_cursor.execute("SELECT * FROM avisos")
@@ -63,7 +63,7 @@ def gracas():
             conexao.close() 
 
     conexao = get_connection()
-    my_cursor = conexao.cursor()   
+    my_cursor = conexao.cursor(dictionary=True)   
 
     try:
         my_cursor.execute("SELECT * FROM agradecimentos")
@@ -96,9 +96,13 @@ def avisos():
         except Exception as e:
             conexao.rollback()
             return f"Erro ao conectar ou enviar: {e}"
+        
+        finally:
+            my_cursor.close()
+            conexao.close()
 
     conexao = get_connection()
-    my_cursor = conexao.cursor()
+    my_cursor = conexao.cursor(dictionary=True)
     try:
         my_cursor.execute("SELECT * FROM avisos")
         result = my_cursor.fetchall()
@@ -130,9 +134,13 @@ def pedidos():
         except Exception as e:
             conexao.rollback()
             return f"Erro ao conectar ou enviar: {e}"
+        
+        finally:
+            my_cursor.close()
+            conexao.close()
 
     conexao = get_connection()
-    my_cursor = conexao.cursor()
+    my_cursor = conexao.cursor(dictionary=True)
 
     try:
         my_cursor.execute("SELECT * FROM pedidos")
@@ -165,9 +173,14 @@ def visitantes():
         except Exception as e:
             conexao.rollback()
             return f"Erro ao conectar ou enviar: {e}"
+        
+        finally:
+            my_cursor.close()
+            conexao.close()
+
 
     conexao = get_connection()
-    my_cursor = conexao.cursor()
+    my_cursor = conexao.cursor(dictionary=True)
     
     try:
         my_cursor.execute("SELECT * FROM visitantes")

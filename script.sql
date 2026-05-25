@@ -4,7 +4,7 @@ use igreja_db;
 create table agradecimentos (
 	id_agr int auto_increment primary key,
     nome_agr varchar(252),
-    motivo  _agr text,
+    motivo_agr text,
     data_agr date
 );
 

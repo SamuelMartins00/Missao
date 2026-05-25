@@ -16,6 +16,14 @@
 
         <button type="submit">Enviar</button>
     </form>
+
+    <ul>
+        {% for a in agradecimentos %}
+        <li>
+            {{a.nome_agr}} {{a.motivo_agr}}
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 
 {% endblock %}

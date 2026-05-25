@@ -16,6 +16,14 @@
 
         <button type="submit">Enviar</button>
     </form>
+
+    <ul>
+        {% for p in pedidos %}
+        <li>
+            {{p.nome_ped}} {{p.motivo_ped}}
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 
 {% endblock %}

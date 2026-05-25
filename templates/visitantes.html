@@ -16,6 +16,14 @@
 
         <button type="submit">Enviar</button>
     </form>
+
+        <ul>
+        {% for v in visitantes %}
+        <li>
+            {{v.nome_vis}} {{v.descricao_vis}}
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 
 {% endblock %}
