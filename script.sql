@@ -3,8 +3,8 @@ use igreja_db;
 
 create table agradecimentos (
 	id_agr int auto_increment primary key,
-    titulo_agr varchar(252),
-    motivos_agr text,
+    nome_agr varchar(252),
+    motivo  _agr text,
     data_agr date
 );
 
