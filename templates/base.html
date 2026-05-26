@@ -3,22 +3,109 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <title>Sistema Igreja</title>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-50 min-h-screen flex flex-col font-family: 'DM Sans', sans-serif;">
 
-    <nav class="bg-orange-600 p-4 text-white flex gap-4">
-        <a href="/avisos">Avisos</a>
-        <a href="/agradecimentos">Culto em ação de graça</a>
-        <a href="/pedidos">Pedidos</a>
-        <a href="/visitantes">Visitantes</a>
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="p-5 max-w-6xl mx-auto relative">
+            <div class="flex justify-between items-center">
+
+                <a href="/" class="text-2xl font-bold tracking-tight text-slate-800">
+                    <span class="text-orange-600">AD</span> Missões
+                </a>
+
+                <ul class="hidden md:flex gap-8 font-medium text-slate-700">
+
+                    <li class="group">
+                        <a href="/avisos" class="hover:text-orange-600 transition">
+                            Avisos
+                        </a>
+                        <span
+                            class="block h-[2px] w-0 bg-orange-600 transition-all duration-300 group-hover:w-full"></span>
+                    </li>
+
+                    <li class="group">
+                        <a href="/agradecimentos" class="hover:text-orange-600 transition">
+                            Ação de Graças
+                        </a>
+                        <span
+                            class="block h-[2px] w-0 bg-orange-600 transition-all duration-300 group-hover:w-full"></span>
+                    </li>
+
+                    <li class="group">
+                        <a href="/pedidos" class="hover:text-orange-600 transition">
+                            Pedidos
+                        </a>
+                        <span
+                            class="block h-[2px] w-0 bg-orange-600 transition-all duration-300 group-hover:w-full"></span>
+                    </li>
+
+                    <li class="group">
+                        <a href="/visitantes" class="hover:text-orange-600 transition">
+                            Visitantes
+                        </a>
+                        <span
+                            class="block h-[2px] w-0 bg-orange-600 transition-all duration-300 group-hover:w-full"></span>
+                    </li>
+
+                </ul>
+
+                <div class="md:hidden">
+                    <input type="checkbox" id="menu-toggle" class="peer hidden">
+
+                    <label for="menu-toggle"
+                        class="cursor-pointer relative z-50 block p-2 text-gray-500 hover:bg-slate-100 rounded-md transition">
+
+
+                        <svg class="size-6 peer-checked:hidden" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+
+                     
+                        <svg class="size-6 hidden peer-checked:block" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </label>
+
+           
+                    <div
+                        class="hidden peer-checked:flex flex-col absolute left-0 right-0 top-full bg-white shadow-xl border-t border-slate-100 z-40">
+                        <ul class="flex flex-col p-6 gap-2 font-medium text-slate-700">
+
+                            <li><a href="/avisos" class="block py-2 hover:text-orange-600 transition">Avisos</a></li>
+                            <li><a href="/agradecimentos" class="block py-2 hover:text-orange-600 transition">Ação de
+                                    Graças</a></li>
+                            <li><a href="/pedidos" class="block py-2 hover:text-orange-600 transition">Pedidos</a></li>
+                            <li><a href="/visitantes" class="block py-2 hover:text-orange-600 transition">Visitantes</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </nav>
 
-    <div class="p-6">
+    <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-10">
         {% block content %}{% endblock %}
-    </div>
+    </main>
+
+    <footer class="border-t border-slate-200 bg-white mt-auto">
+        <div
+            class="max-w-6xl mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-slate-500">
+            <span><span class="text-orange-600">AD</span> Missões</span>
+            <span>&copy; 2026. Todos os direitos reservados.</span>
+        </div>
+    </footer>
 
 </body>
 

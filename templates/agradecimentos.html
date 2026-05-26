@@ -2,28 +2,70 @@
 
 {% block content %}
 
-<body>
-    <div>
-        <h1>Culto em ação de graça</h1>
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-slate-800">Culto em <span class="text-orange-600">Ação de Graça</span></h1>
+    <p class="text-slate-500 mt-1 text-sm">Registre o agradecimento</p>
+</div>
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-10">
+    <form action="/agradecimentos" method="POST" class="flex flex-col gap-5">
+
+        <div class="flex flex-col gap-1">
+            <label for="nome" class="text-sm font-medium text-slate-700">Nome</label>
+            <input type="text" id="nome" name="nome" placeholder="Digite o nome" required
+                class="border border-slate-200 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition">
+        </div>
+
+        <div class="flex flex-col gap-1">
+            <label for="motivo" class="text-sm font-medium text-slate-700">Motivo</label>
+            <input type="text" id="motivo" name="motivo" placeholder="Digite o motivo"
+                class="border border-slate-200 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition">
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit"
+                class="bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-semibold px-6 py-2.5 rounded-lg transition">
+                Enviar
+            </button>
+        </div>
+
+    </form>
+</div>
+
+<div>
+    <h2 class="text-lg font-semibold text-slate-700 mb-4">Culto em Ação de Graça registrados</h2>
+
+    <!-- Filtro de período -->
+    <div class="flex flex-wrap gap-2 mb-6">
+        {% for valor, label in [('hoje', 'Hoje'), ('semana', 'Últimos 7 dias'), ('mes', 'Últimos 30 dias'), ('todos','Todos')] %}
+        {% if periodo == valor %}
+        <a href="?periodo={{ valor }}"
+            class="px-4 py-1.5 rounded-full text-sm font-medium transition bg-orange-600 text-white">
+            {{ label }}
+        </a>
+        {% else %}
+        <a href="?periodo={{ valor }}"
+            class="px-4 py-1.5 rounded-full text-sm font-medium transition bg-white border border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-600">
+            {{ label }}
+        </a>
+        {% endif %}
+        {% endfor %}
     </div>
 
-    <form action="/agradecimentos" method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" id="nome" name="nome" required>
-
-        <label for="motivo">Motivo:</label>
-        <input type="text" id="motivo" name="motivo">
-
-        <button type="submit">Enviar</button>
-    </form>
-
-    <ul>
+    <!-- Lista de agradecimentos -->
+    <ul class="flex flex-col gap-3">
         {% for a in agradecimentos %}
-        <li>
-            {{a.nome_agr}} {{a.motivo_agr}} {{a.data_agr}}
+        <li
+            class="bg-white border border-slate-100 rounded-xl px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-1">
+            <div>
+                <span class="font-semibold text-slate-800">{{ a.nome_agr }}</span>
+                <span class="text-slate-500 mx-1">—</span>
+                <span class="text-slate-600">{{ a.motivo_agr }}</span>
+            </div>
+            <span class="text-sm text-slate-600">{{ a.data_agr }}</span>
         </li>
         {% endfor %}
     </ul>
-</body>
+</div>
 
 {% endblock %}

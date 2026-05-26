@@ -60,15 +60,27 @@ def gracas():
         
         finally:
             my_cursor.close()
-            conexao.close() 
+            conexao.close()
+
+    # Filtro de período via query string
+    periodo = request.args.get('periodo', 'hoje')
+
+    filtros = {
+        'hoje':   "WHERE DATE(data_agr) = CURDATE()",
+        'semana': "WHERE data_agr >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)",
+        'mes':    "WHERE data_agr >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)",
+        'todos':  ""
+    }
+
+    clausula = filtros.get(periodo, filtros['hoje'])
 
     conexao = get_connection()
-    my_cursor = conexao.cursor(dictionary=True)   
+    my_cursor = conexao.cursor(dictionary=True)
 
     try:
-        my_cursor.execute("SELECT * FROM agradecimentos")
+        my_cursor.execute(f"SELECT * FROM agradecimentos {clausula} ORDER BY data_agr DESC")
         result = my_cursor.fetchall()
-        return render_template('agradecimentos.html', agradecimentos=result)
+        return render_template('agradecimentos.html', agradecimentos=result, periodo=periodo)
     
     finally:
         my_cursor.close()
