@@ -2,28 +2,50 @@
 
 {% block content %}
 
-<body>
-    <div>
-        <h1>Avisos</h1>
-    </div>
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-slate-800">Avisos</h1>
+    <p class="text-slate-500 mt-1 text-sm">Registre o aviso</p>
+</div>
 
-    <form action="/avisos" method="POST">
-        <label for="titulo">Título:</label>
-        <input type="text" id="titulo" name="titulo" required>
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-10">
+    <form action="/avisos" method="POST" class="flex flex-col gap-5">
 
-        <label for="descricao">Descrição:</label>
-        <input type="text" id="descricao" name="descricao">
+        <div class="flex flex-col gap-1">
+            <label for="titulo" class="text-sm font-medium text-slate-700">Título:</label>
+            <input type="text" id="titulo" name="titulo" placeholder="Escreva aqui o aviso" required
+                class="border border-slate-200 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition">
+        </div>
 
-        <button type="submit">Enviar</button>
+        <div class="flex flex-col gap-1">
+            <label for="descricao" class="text-sm font-medium text-slate-700">Descrição:</label>
+            <input type="text" id="descricao" name="descricao" placeholder="Escreva aqui a descrição"
+                class="border border-slate-200 rounded-lg px-4 py-2.5 text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition">
+        </div>
+
+        <div class="flex justify-end">
+            <button type="submit"
+                class="bg-orange-500 hover:bg-orange-600 active:bg-orange-800 text-white font-medium px-6 py-2.5 rounded-lg transition">
+                Enviar
+            </button>
+        </div>
+
     </form>
+</div>
 
-    <ul>
-        {% for a in avisos %}
-        <li>
-            {{a.titulo_avi}} {{a.descricao_avi}} {{a.data_avi}}
-        </li>
-        {% endfor %}
-    </ul>
-</body>
+<div>
+    <h2 class="text-lg font-semibold text-slate-700 mb-4">Avisos registrados</h2>
+
+    <ul class="flex flex-col gap-3">
+    {% for a in avisos %}
+    <li class="bg-white border border-slate-100 rounded-xl px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-1">
+        <div>
+            <span class="font-semibold text-slate-800">{{a.titulo_avi}}</span>
+            <span class="text-slate-500 mx-1">-</span>
+            <span class="text-slate-600">{{a.descricao_avi}}</span>
+        </div>
+        <span class="text-sm text-slate-600">{{a.data_avi}}</span>
+    </li>
+    {% endfor %}
+</ul>
 
 {% endblock %}
