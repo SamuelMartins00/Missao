@@ -1,22 +1,21 @@
-version: "3.9"
-
 services:
-  
+
   db:
     image: mysql:8.0
     container_name: igreja_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: 12345678
-      MYSQL_DATABSE: igreja_db
+      MYSQL_ROOT_PASSWORD: "12345678"
+      MYSQL_DATABASE: igreja_db
       MYSQL_USER: cooperador
       MYSQL_PASSWORD: cooperador123
+      TZ: "America/Sao_Paulo"  # <--- Define o fuso horário do banco
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
-      - script.sql:/docker-entrypoint-initdb.d/script.sql
-
+      - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+      - /etc/localtime:/etc/localtime:ro  # <--- Sincroniza o relógio com o Ubuntu
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -34,10 +33,12 @@ services:
       DB_USER: cooperador
       DB_PASSWORD: cooperador123
       DB_NAME: igreja_db
-
+      TZ: "America/Sao_Paulo"  # <--- Define o fuso horário da aplicação Flask
+    volumes:
+      - /etc/localtime:/etc/localtime:ro  # <--- Sincroniza o relógio com o Ubuntu
     depends_on:
-      - db:
-          condition: service_healthy
+      db:
+        condition: service_healthy
 
 volumes:
   db_data:

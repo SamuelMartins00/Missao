@@ -1,6 +1,3 @@
-create database igreja_db;
-use igreja_db;
-
 create table agradecimentos (
 	id_agr int auto_increment primary key,
     nome_agr varchar(252),
