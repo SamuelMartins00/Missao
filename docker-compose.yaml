@@ -1,0 +1,43 @@
+version: "3.9"
+
+services:
+  
+  db:
+    image: mysql:8.0
+    container_name: igreja_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABSE: igreja_db
+      MYSQL_USER: cooperador
+      MYSQL_PASSWORD: cooperador123
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - script.sql:/docker-entrypoint-initdb.d/script.sql
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: igreja_web
+    restart: always
+    ports:
+     - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: cooperador
+      DB_PASSWORD: cooperador123
+      DB_NAME: igreja_db
+
+    depends_on:
+      - db:
+          condition: service_healthy
+
+volumes:
+  db_data:
