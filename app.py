@@ -24,15 +24,35 @@ def get_connection():
 @app.route('/', methods=['GET'])
 def index():
     conexao = get_connection()
-    my_cursor = conexao.cursor(dictionary=True)
+    cursor = conexao.cursor(dictionary=True)
 
     try:
-        my_cursor.execute("SELECT * FROM avisos")
-        result = my_cursor.fetchall()
-        return render_template('index.html', avisos=result)
-    
+        # Buscar avisos
+        cursor.execute("SELECT * FROM avisos")
+        avisos = cursor.fetchall()
+
+        # Buscar agradecimentos
+        cursor.execute("SELECT * FROM agradecimentos")
+        agradecimentos = cursor.fetchall()
+
+        # Buscar pedidos
+        cursor.execute("SELECT * FROM pedidos")
+        pedidos = cursor.fetchall()
+
+        # Buscar visitantes
+        cursor.execute("SELECT * FROM visitantes")
+        visitantes = cursor.fetchall()
+
+        return render_template(
+            'index.html',
+            avisos=avisos,
+            agradecimentos=agradecimentos,
+            pedidos=pedidos,
+            visitantes=visitantes
+        )
+
     finally:
-        my_cursor.close()
+        cursor.close()
         conexao.close()
 
 @app.route('/agradecimentos', methods=['POST', 'GET'])
