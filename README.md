@@ -1,13 +1,61 @@
 # Missao
 
+## Descrição do sistema
+O sistema Missao foi desenvolvido com dois principais objetivos: 
+* desenvolver habilidades requeridas em atividades universitárias
+* atender a uma demanda real de um cliente
+
+## Tecnologias utilizadas
+- Front-end:
+  * HTML5
+  * Tailwind
+- Back-end:
+  * MySQL
+  * Python
+    - Jinja
+    - Flask
+
+## Funcionalidades principais
+- Armazenamento de dados
+- Exibição dos dados
+
+## Prints
+
+## Estrutura das pastas 
+Missao/
+|
+|-- static/
+|    |-- style.css
+|
+|-- templates/
+|    |-- agradecimentos.html
+|    |-- avisos.html
+|    |-- base.html
+|    |-- index.html
+|    |-- pedidos.html
+|    |-- visitantes.html
+|
+|-- .gitignore
+|
+|-- Dockerfile
+|
+|-- README.md
+|
+|-- app.py
+|
+|-- docker-compose.yaml
+|
+|-- requirements.txt
+|
+|--script.sql
+
+
 ## Guia de instalção
   No terminal:
   - python3 -m venv venv 
   - . venv/Scripts/Activate
   -  - ambiente vitual ativado (venv"verde")
   - pip install -r requirements.txt
-
-
 
 ## Guia de instalação usando Docker
   No terminal linux:
