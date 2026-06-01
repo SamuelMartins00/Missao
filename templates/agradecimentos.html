@@ -35,24 +35,6 @@
 <div>
     <h2 class="text-lg font-semibold text-slate-700 mb-4">Culto em Ação de Graça registrados</h2>
 
-    <!-- Filtro de período -->
-    <div class="flex flex-wrap gap-2 mb-6">
-        {% for valor, label in [('hoje', 'Hoje'), ('semana', 'Últimos 7 dias'), ('mes', 'Últimos 30 dias'), ('todos','Todos')] %}
-        {% if periodo == valor %}
-        <a href="?periodo={{ valor }}"
-            class="px-4 py-1.5 rounded-full text-sm font-medium transition bg-orange-600 text-white">
-            {{ label }}
-        </a>
-        {% else %}
-        <a href="?periodo={{ valor }}"
-            class="px-4 py-1.5 rounded-full text-sm font-medium transition bg-white border border-slate-200 text-slate-600 hover:border-orange-400 hover:text-orange-600">
-            {{ label }}
-        </a>
-        {% endif %}
-        {% endfor %}
-    </div>
-
-    <!-- Lista de agradecimentos -->
     <ul class="flex flex-col gap-3">
         {% for a in agradecimentos %}
         <li
