@@ -59,7 +59,12 @@ O projeto também tem como objetivo o desenvolvimento de competências práticas
 Missao/
 │
 ├── static/
-│   └── style.css               # 
+│   ├── prints               # Imagens do projeto
+│       ├── avisos.png             # Print da página avisos
+│       ├── index.png              # Print da página index 
+│       ├── indexmobile.png        # Print da página index no celular
+│       └── visitantesmobile.png   # Print da página de visitantes no celular
+│   ├── style.css            # Futuras estilizações
 │
 ├── templates/
 │   ├── base.html               # Template base (layout compartilhado)
