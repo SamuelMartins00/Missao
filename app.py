@@ -11,7 +11,7 @@ app = Flask(__name__)
 # Conexão com o banco de dados
 pool = pooling.MySQLConnectionPool(
     pool_name="igreja_pool",
-    pool_size=5,
+    pool_size=10,
     host=os.getenv('DB_HOST'),
     user=os.getenv('DB_USER'),
     password=os.getenv('DB_PASSWORD'),
@@ -55,6 +55,9 @@ def index():
         cursor.close()
         conexao.close()
 
+# --------------------------------------------------------------------------------
+
+
 @app.route('/agradecimentos', methods=['POST', 'GET'])
 def gracas():
 
@@ -93,7 +96,50 @@ def gracas():
     finally:
         my_cursor.close()
         conexao.close()
-        
+
+@app.route('/agradecimentos/editar/<int:id>', methods=['POST'])
+def editar_agradecimento(id):   
+    nome = request.form['nome']
+    motivo = request.form['motivo']
+
+    conexao = get_connection()
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("UPDATE agradecimentos SET nome_agr = %s, motivo_agr = %s WHERE id_agr = %s", (nome, motivo, id))
+        conexao.commit()
+    
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou editar: {e}"
+
+    finally:
+        my_cursor.close()
+        conexao.close()
+
+    return redirect('/agradecimentos')
+
+@app.route('/agradecimentos/deletar/<int:id>', methods=['POST'])
+def deletar_agradecimento(id):
+    conexao = get_connection()
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("DELETE FROM agradecimentos WHERE id_agr = %s", (id,))
+        conexao.commit()
+    
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou deletar: {e}"
+
+    finally:
+        my_cursor.close()
+        conexao.close()
+
+    return redirect('/agradecimentos') 
+
+# --------------------------------------------------------------------------------
+
 @app.route('/avisos', methods=['POST', 'GET'])
 def avisos():
 
