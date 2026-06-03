@@ -57,7 +57,6 @@ def index():
 
 # --------------------------------------------------------------------------------
 
-
 @app.route('/agradecimentos', methods=['POST', 'GET'])
 def gracas():
 
@@ -179,6 +178,47 @@ def avisos():
         my_cursor.close()
         conexao.close()
 
+@app.route('/avisos/editar/<int:id>', methods=['POST'])
+def editar_avisos(id):
+    nome = request.form['nome']
+    motivo = request.form['motivo']
+
+    conexao = get_connection()
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("UPDATE avisos SET titulo_avi = %s, descricao_avi = %s WHERE id_avi = %s", (nome, motivo, id))
+        conexao.commit()
+
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou editar: {e}"
+    
+    finally:
+        my.cursor.close()
+        conexao.close()
+    
+    return redirect('/avisos')
+
+@app.route('/avisos/deletar/<int:id>', methods=['POST'])
+def deletar_avisos(id):
+    conexao = get_connection
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("DELETE FROM avisos WHERE id_avi = %s", (id,))
+        conexao.commit()
+
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou deletar: {e}"
+    
+    finally:
+        my_cursor.close()
+        conexao.close()
+
+    return redirect('/avisos')
+
 @app.route('/pedidos', methods=['POST', 'GET'])
 def pedidos():
 
@@ -217,6 +257,47 @@ def pedidos():
     finally:
         my_cursor.close()
         conexao.close()
+
+@app.route('/pedidos/editar/<int:id>', methods=['POST'])
+def editar_pedidos(id):
+    nome = request.form['nome']
+    motivo = request.form['motivo']
+
+    conexao = get_connection()
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("UPDATE pedidos SET nome_ped = %s, motivo_ped = %s WHERE id_ped = %s", (nome, motivo, id))
+        conexao.commit()
+
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou editar: {e}"
+    
+    finally:
+        my_cursor.close()
+        conexao.close()
+    
+    return redirect('/pedidos')
+
+@app.route('/pedidos/deletar/<int:id>', methods=['POST'])
+def deletar_pedidos(id):
+    conexao = get_connection
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("DELETE FROM pedidos WHERE id_ped = %s", (id,))
+        conexao.commit()
+
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou deletar: {e}"
+    
+    finally:
+        my_cursor.close()
+        conexao.close()
+
+    return redirect('/pedidos')
 
 @app.route('/visitantes', methods=['POST', 'GET'])
 def visitantes():
@@ -257,6 +338,47 @@ def visitantes():
     finally:
         my_cursor.close()
         conexao.close()
+
+@app.route('/avisos/editar/<int:id>', methods=['POST'])
+def editar_visitantes(id):
+    nome = request.form['nome']
+    descricao = request.form['descricao']
+
+    conexao = get_connection()
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("UPDATE visitantes SET nome_vis = %s, descricao_vis = %s WHERE id_vis = %s", (nome, descricao, id))
+        conexao.commit()
+
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou editar: {e}"
+    
+    finally:
+        my_cursor.close()
+        conexao.close()
+    
+    return redirect('/visitantes')
+
+@app.route('/visitantes/deletar/<int:id>', methods=['POST'])
+def deletar_visitantes(id):
+    conexao = get_connection()
+    my_cursor = conexao.cursor()
+
+    try:
+        my_cursor.execute("DELETE FROM visitantes WHERE id_vis = %s", (id,))
+        conexao.commit()
+
+    except Exception as e:
+        conexao.rollback()
+        return f"Erro ao conectar ou deletar: {e}"
+    
+    finally:
+        my_cursor.close()
+        conexao.close()
+
+    return redirect('/visitantes')
 
 if __name__ == '__main__':
     app.run(debug=True)
