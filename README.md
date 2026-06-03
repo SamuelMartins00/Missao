@@ -127,6 +127,7 @@ flask run
 Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
 
 ```env
+MYSQL_ROOT_PASSWORD= sua_senha_root
 DB_HOST= localhost
 DB_USER= seu_usuario
 DB_PASSWORD= sua_senha
