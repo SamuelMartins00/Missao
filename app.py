@@ -55,8 +55,6 @@ def index():
         cursor.close()
         conexao.close()
 
-# --------------------------------------------------------------------------------
-
 @app.route('/agradecimentos', methods=['POST', 'GET'])
 def gracas():
 
@@ -137,8 +135,6 @@ def deletar_agradecimento(id):
 
     return redirect('/agradecimentos') 
 
-# --------------------------------------------------------------------------------
-
 @app.route('/avisos', methods=['POST', 'GET'])
 def avisos():
 
@@ -179,15 +175,15 @@ def avisos():
         conexao.close()
 
 @app.route('/avisos/editar/<int:id>', methods=['POST'])
-def editar_avisos(id):
-    nome = request.form['nome']
-    motivo = request.form['motivo']
+def editar_avisos(id):  
+    titulo = request.form['titulo']
+    descricao = request.form['descricao']
 
     conexao = get_connection()
     my_cursor = conexao.cursor()
 
     try:
-        my_cursor.execute("UPDATE avisos SET titulo_avi = %s, descricao_avi = %s WHERE id_avi = %s", (nome, motivo, id))
+        my_cursor.execute("UPDATE avisos SET titulo_avi = %s, descricao_avi = %s WHERE id_avi = %s", (titulo, descricao, id))
         conexao.commit()
 
     except Exception as e:
@@ -195,14 +191,14 @@ def editar_avisos(id):
         return f"Erro ao conectar ou editar: {e}"
     
     finally:
-        my.cursor.close()
+        my_cursor.close()
         conexao.close()
     
     return redirect('/avisos')
 
 @app.route('/avisos/deletar/<int:id>', methods=['POST'])
 def deletar_avisos(id):
-    conexao = get_connection
+    conexao = get_connection()
     my_cursor = conexao.cursor()
 
     try:
@@ -282,7 +278,7 @@ def editar_pedidos(id):
 
 @app.route('/pedidos/deletar/<int:id>', methods=['POST'])
 def deletar_pedidos(id):
-    conexao = get_connection
+    conexao = get_connection()
     my_cursor = conexao.cursor()
 
     try:
@@ -339,7 +335,7 @@ def visitantes():
         my_cursor.close()
         conexao.close()
 
-@app.route('/avisos/editar/<int:id>', methods=['POST'])
+@app.route('/visitantes/editar/<int:id>', methods=['POST'])
 def editar_visitantes(id):
     nome = request.form['nome']
     descricao = request.form['descricao']
@@ -382,4 +378,3 @@ def deletar_visitantes(id):
 
 if __name__ == '__main__':
     app.run(debug=True)
- 

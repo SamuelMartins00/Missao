@@ -1,0 +1,179 @@
+from flask import Flask, render_template, request, redirect
+import os
+import logging
+from contextlib import contextmanager
+import mysql.connector
+from mysql.connector import pooling
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = Flask(__name__)
+
+logging.basicConfig(level=logging.ERROR)
+logger = logging.getLogger(__name__)
+
+# ─── Conexão com o banco de dados ─────────────────────────────────────────────
+
+pool = pooling.MySQLConnectionPool(
+    pool_name="igreja_pool",
+    pool_size=10,
+    host=os.getenv('DB_HOST'),
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    database=os.getenv('DB_NAME')
+)
+
+@contextmanager
+def get_cursor(dictionary=True):
+    """Context manager que abre, faz commit/rollback e fecha a conexão automaticamente."""
+    conexao = pool.get_connection()
+    cursor = conexao.cursor(dictionary=dictionary)
+    try:
+        yield conexao, cursor
+        conexao.commit()
+    except Exception as e:
+        conexao.rollback()
+        logger.error("Erro no banco de dados: %s", e)
+        raise
+    finally:
+        cursor.close()
+        conexao.close()
+
+# ─── Funções auxiliares de banco ──────────────────────────────────────────────
+
+def db_fetch(query, valores=None):
+    """Executa um SELECT e retorna todos os resultados."""
+    with get_cursor() as (_, cursor):
+        cursor.execute(query, valores or ())
+        return cursor.fetchall()
+
+def db_execute(query, valores=None):
+    """Executa INSERT, UPDATE ou DELETE."""
+    with get_cursor() as (_, cursor):
+        cursor.execute(query, valores or ())
+
+# ─── Página inicial ───────────────────────────────────────────────────────────
+
+@app.route('/', methods=['GET'])
+def index():
+    return render_template(
+        'index.html',
+        avisos=db_fetch("SELECT * FROM avisos"),
+        agradecimentos=db_fetch("SELECT * FROM agradecimentos"),
+        pedidos=db_fetch("SELECT * FROM pedidos"),
+        visitantes=db_fetch("SELECT * FROM visitantes"),
+    )
+
+# ─── Fábrica de rotas CRUD ────────────────────────────────────────────────────
+
+def register_crud(
+    blueprint_name,   # nome da rota e prefixo da URL  ex: 'avisos'
+    table,            # nome da tabela                  ex: 'avisos'
+    id_col,           # coluna PK                       ex: 'id_avi'
+    columns,          # colunas de dados (tupla)        ex: ('titulo_avi', 'descricao_avi')
+    form_fields,      # campos do form (tupla)          ex: ('titulo', 'descricao')
+    template,         # template HTML                   ex: 'avisos.html'
+    context_key,      # variável enviada ao template    ex: 'avisos'
+):
+    """
+    Registra automaticamente as rotas GET/POST/editar/deletar
+    para qualquer entidade, eliminando código repetitivo.
+    """
+
+    list_url  = f'/{blueprint_name}'
+    edit_url  = f'/{blueprint_name}/editar/<int:id>'
+    del_url   = f'/{blueprint_name}/deletar/<int:id>'
+
+    col_placeholders = ', '.join(['%s'] * len(columns))
+    col_assignments  = ', '.join(f'{col} = %s' for col in columns)
+    insert_sql = f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({col_placeholders})"
+    update_sql = f"UPDATE {table} SET {col_assignments} WHERE {id_col} = %s"
+    delete_sql = f"DELETE FROM {table} WHERE {id_col} = %s"
+    select_sql = f"SELECT * FROM {table}"
+
+    def get_form_values():
+        return tuple(request.form[field] for field in form_fields)
+
+    # ── GET / POST ──
+    def list_create():
+        if request.method == 'POST':
+            try:
+                db_execute(insert_sql, get_form_values())
+                return redirect(list_url)
+            except Exception:
+                return render_template('erro.html', mensagem="Erro ao salvar. Tente novamente."), 500
+
+        return render_template(template, **{context_key: db_fetch(select_sql)})
+
+    # ── Editar ──
+    def edit(id):
+        try:
+            db_execute(update_sql, (*get_form_values(), id))
+        except Exception:
+            return render_template('erro.html', mensagem="Erro ao editar. Tente novamente."), 500
+        return redirect(list_url)
+
+    # ── Deletar ──
+    def delete(id):
+        try:
+            db_execute(delete_sql, (id,))
+        except Exception:
+            return render_template('erro.html', mensagem="Erro ao deletar. Tente novamente."), 500
+        return redirect(list_url)
+
+    # Nomes únicos para as funções (obrigatório no Flask)
+    list_create.__name__ = blueprint_name
+    edit.__name__        = f'editar_{blueprint_name}'
+    delete.__name__      = f'deletar_{blueprint_name}'
+
+    app.add_url_rule(list_url, view_func=list_create, methods=['GET', 'POST'])
+    app.add_url_rule(edit_url, view_func=edit,         methods=['POST'])
+    app.add_url_rule(del_url,  view_func=delete,       methods=['POST'])
+
+
+# ─── Registro das entidades ───────────────────────────────────────────────────
+
+register_crud(
+    blueprint_name='agradecimentos',
+    table='agradecimentos',
+    id_col='id_agr',
+    columns=('nome_agr', 'motivo_agr'),
+    form_fields=('nome', 'motivo'),
+    template='agradecimentos.html',
+    context_key='agradecimentos',
+)
+
+register_crud(
+    blueprint_name='avisos',
+    table='avisos',
+    id_col='id_avi',
+    columns=('titulo_avi', 'descricao_avi'),
+    form_fields=('titulo', 'descricao'),
+    template='avisos.html',
+    context_key='avisos',
+)
+
+register_crud(
+    blueprint_name='pedidos',
+    table='pedidos',
+    id_col='id_ped',
+    columns=('nome_ped', 'motivo_ped'),
+    form_fields=('nome', 'motivo'),
+    template='pedidos.html',
+    context_key='pedidos',
+)
+
+register_crud(
+    blueprint_name='visitantes',
+    table='visitantes',
+    id_col='id_vis',
+    columns=('nome_vis', 'descricao_vis'),
+    form_fields=('nome', 'descricao'),
+    template='visitantes.html',
+    context_key='visitantes',
+)
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
