@@ -57,30 +57,28 @@ O projeto também tem como objetivo o desenvolvimento de competências práticas
 
 ```
 Missao/
-│
-├── static/
-│   ├── prints               # Imagens do projeto
-│       ├── avisos.png             # Print da página avisos
-│       ├── index.png              # Print da página index 
-│       ├── indexmobile.png        # Print da página index no celular
-│       └── visitantesmobile.png   # Print da página de visitantes no celular
-│   ├── style.css            # Futuras estilizações
-│
-├── templates/
-│   ├── base.html               # Template base (layout compartilhado)
-│   ├── index.html              # Página principal / dashboard
-│   ├── avisos.html             # Página de avisos
-│   ├── agradecimentos.html     # Página de agradecimentos
-│   ├── pedidos.html            # Página de pedidos de oração
-│   └── visitantes.html         # Página de visitantes
-│
-├── .gitignore
-├── app.py                      # Aplicação Flask (rotas e lógica)
-├── Dockerfile                  # Imagem Docker da aplicação web
-├── docker-compose.yaml         # Orquestração dos serviços (web + banco)
-├── requirements.txt            # Dependências Python
-├── script.sql                  # Script de criação das tabelas
-└── README.md
+├── 📁 static
+│   ├── 📁 prints
+│   │   ├── 🖼️ avisos.png
+│   │   ├── 🖼️ index.png
+│   │   ├── 🖼️ indexmobile.png
+│   │   └── 🖼️ visitantesmobile.png
+│   └── 🎨 style.css
+├── 📁 templates
+│   ├── 🌐 agradecimentos.html
+│   ├── 🌐 avisos.html
+│   ├── 🌐 base.html
+│   ├── 🌐 index.html
+│   ├── 🌐 pedidos.html
+│   └── 🌐 visitantes.html
+├── ⚙️ .gitignore
+├── 🐳 Dockerfile
+├── 📝 GUIA_USUARIO.md
+├── 📝 README.md
+├── 🐍 app.py
+├── ⚙️ docker-compose.yaml
+├── 📄 requirements.txt
+└── 📄 script.sql
 ```
 
 ---
