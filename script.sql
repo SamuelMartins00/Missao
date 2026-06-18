@@ -24,4 +24,14 @@ create table visitantes (
     nome_vis varchar(252),
     descricao_vis text,
     data_vis datetime default current_timestamp 
-);	
+);
+
+create table usuarios (
+    id      int auto_increment primary key,
+    usuario varchar(50) not null unique,
+    senha   char(64) not null,
+    perfil  ENUM('admin', 'usuario') not null default 'usuario',
+    criado  datetime default current_timestamp
+);
+
+insert into usuarios (usuario, senha, perfil) values ('admin', SHA2('admin', 256), 'admin');
