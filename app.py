@@ -82,13 +82,15 @@ def gracas():
             my_cursor.close()
             conexao.close()
 
+    editando = request.args.get('editar', type=int)
+
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
 
     try:
         my_cursor.execute("SELECT * FROM agradecimentos")
         result = my_cursor.fetchall()
-        return render_template('agradecimentos.html', agradecimentos=result)
+        return render_template('agradecimentos.html', agradecimentos=result, editando=editando)
     
     finally:
         my_cursor.close()
@@ -115,6 +117,29 @@ def editar_agradecimento(id):
         conexao.close()
 
     return redirect('/agradecimentos')
+
+@app.route('/agradecimentos/confirmar-deletar/<int:id>', methods=['GET'])
+def confirmar_deletar_agradecimento(id):
+    conexao = get_connection()
+    my_cursor = conexao.cursor(dictionary=True)
+
+    try:
+        my_cursor.execute("SELECT * FROM agradecimentos WHERE id_agr = %s", (id,))
+        item = my_cursor.fetchone()
+
+        if not item:
+            return redirect('/agradecimentos')
+
+        return render_template('confirmar_deletar.html',
+            titulo='Culto em Ação de Graça',
+            campos=[('Nome', item['nome_agr']), ('Motivo', item['motivo_agr']), ('Data', item['data_agr'])],
+            rota_confirmar=f'/agradecimentos/deletar/{id}',
+            rota_cancelar='/agradecimentos'
+        )
+
+    finally:
+        my_cursor.close()
+        conexao.close()
 
 @app.route('/agradecimentos/deletar/<int:id>', methods=['POST'])
 def deletar_agradecimento(id):
@@ -162,13 +187,15 @@ def avisos():
             my_cursor.close()
             conexao.close()
 
+    editando = request.args.get('editar', type=int)
+
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
 
     try:
         my_cursor.execute("SELECT * FROM avisos")
         result = my_cursor.fetchall()
-        return render_template('avisos.html', avisos=result)
+        return render_template('avisos.html', avisos=result, editando=editando)
     
     finally:
         my_cursor.close()
@@ -195,6 +222,29 @@ def editar_avisos(id):
         conexao.close()
     
     return redirect('/avisos')
+
+@app.route('/avisos/confirmar-deletar/<int:id>', methods=['GET'])
+def confirmar_deletar_avisos(id):
+    conexao = get_connection()
+    my_cursor = conexao.cursor(dictionary=True)
+
+    try:
+        my_cursor.execute("SELECT * FROM avisos WHERE id_avi = %s", (id,))
+        item = my_cursor.fetchone()
+
+        if not item:
+            return redirect('/avisos')
+
+        return render_template('confirmar_deletar.html',
+            titulo='Aviso',
+            campos=[('Título', item['titulo_avi']), ('Descrição', item['descricao_avi']), ('Data', item['data_avi'])],
+            rota_confirmar=f'/avisos/deletar/{id}',
+            rota_cancelar='/avisos'
+        )
+
+    finally:
+        my_cursor.close()
+        conexao.close()
 
 @app.route('/avisos/deletar/<int:id>', methods=['POST'])
 def deletar_avisos(id):
@@ -242,13 +292,15 @@ def pedidos():
             my_cursor.close()
             conexao.close()
 
+    editando = request.args.get('editar', type=int)
+
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
 
     try:
         my_cursor.execute("SELECT * FROM pedidos")
         result = my_cursor.fetchall()
-        return render_template('pedidos.html', pedidos=result)
+        return render_template('pedidos.html', pedidos=result, editando=editando)
 
     finally:
         my_cursor.close()
@@ -275,6 +327,29 @@ def editar_pedidos(id):
         conexao.close()
     
     return redirect('/pedidos')
+
+@app.route('/pedidos/confirmar-deletar/<int:id>', methods=['GET'])
+def confirmar_deletar_pedidos(id):
+    conexao = get_connection()
+    my_cursor = conexao.cursor(dictionary=True)
+
+    try:
+        my_cursor.execute("SELECT * FROM pedidos WHERE id_ped = %s", (id,))
+        item = my_cursor.fetchone()
+
+        if not item:
+            return redirect('/pedidos')
+
+        return render_template('confirmar_deletar.html',
+            titulo='Pedido de Oração',
+            campos=[('Nome', item['nome_ped']), ('Pedido', item['motivo_ped']), ('Data', item['data_ped'])],
+            rota_confirmar=f'/pedidos/deletar/{id}',
+            rota_cancelar='/pedidos'
+        )
+
+    finally:
+        my_cursor.close()
+        conexao.close()
 
 @app.route('/pedidos/deletar/<int:id>', methods=['POST'])
 def deletar_pedidos(id):
@@ -323,13 +398,15 @@ def visitantes():
             conexao.close()
 
 
+    editando = request.args.get('editar', type=int)
+
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
     
     try:
         my_cursor.execute("SELECT * FROM visitantes")
         result = my_cursor.fetchall()
-        return render_template('visitantes.html', visitantes=result)
+        return render_template('visitantes.html', visitantes=result, editando=editando)
     
     finally:
         my_cursor.close()
@@ -356,6 +433,29 @@ def editar_visitantes(id):
         conexao.close()
     
     return redirect('/visitantes')
+
+@app.route('/visitantes/confirmar-deletar/<int:id>', methods=['GET'])
+def confirmar_deletar_visitantes(id):
+    conexao = get_connection()
+    my_cursor = conexao.cursor(dictionary=True)
+
+    try:
+        my_cursor.execute("SELECT * FROM visitantes WHERE id_vis = %s", (id,))
+        item = my_cursor.fetchone()
+
+        if not item:
+            return redirect('/visitantes')
+
+        return render_template('confirmar_deletar.html',
+            titulo='Visitante',
+            campos=[('Nome', item['nome_vis']), ('Sobre', item['descricao_vis']), ('Data', item['data_vis'])],
+            rota_confirmar=f'/visitantes/deletar/{id}',
+            rota_cancelar='/visitantes'
+        )
+
+    finally:
+        my_cursor.close()
+        conexao.close()
 
 @app.route('/visitantes/deletar/<int:id>', methods=['POST'])
 def deletar_visitantes(id):

@@ -37,14 +37,49 @@
 
     <ul class="flex flex-col gap-3">
         {% for a in agradecimentos %}
-        <li
-            class="bg-white border border-slate-100 rounded-xl px-5 py-4 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-1">
-            <div>
-                <span class="font-semibold text-slate-800">{{ a.nome_agr }}</span>
-                <span class="text-slate-500 mx-1">-</span>
-                <span class="text-slate-600">{{ a.motivo_agr }}</span>
+        <li class="bg-white border border-slate-100 rounded-xl px-5 py-4 shadow-sm">
+
+            {% if editando == a.id_agr %}
+            <form action="/agradecimentos/editar/{{ a.id_agr }}" method="POST" class="flex flex-col gap-3">
+                <div class="flex flex-col md:flex-row gap-3">
+                    <input type="text" name="nome" value="{{ a.nome_agr }}" required
+                        class="flex-1 border border-orange-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <input type="text" name="motivo" value="{{ a.motivo_agr }}"
+                        class="flex-1 border border-orange-300 rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+                <div class="flex gap-2 justify-end">
+                    <a href="/agradecimentos"
+                        class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-1.5 rounded-lg transition">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                        class="text-sm bg-orange-500 hover:bg-orange-600 text-white px-4 py-1.5 rounded-lg transition">
+                        Salvar
+                    </button>
+                </div>
+            </form>
+            {% else %}
+
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                <div>
+                    <span class="font-semibold text-slate-800">{{ a.nome_agr }}</span>
+                    <span class="text-slate-500 mx-1">-</span>
+                    <span class="text-slate-600">{{ a.motivo_agr }}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-slate-400">{{ a.data_agr }}</span>
+                    <a href="/agradecimentos?editar={{ a.id_agr }}"
+                        class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg transition">
+                        Editar
+                    </a>
+                    <a href="/agradecimentos/confirmar-deletar/{{ a.id_agr }}"
+                        class="text-sm bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg transition">
+                        Deletar
+                    </a>
+                </div>
             </div>
-            <span class="text-sm text-slate-600">{{ a.data_agr }}</span>
+            {% endif %}
+
         </li>
         {% endfor %}
     </ul>
