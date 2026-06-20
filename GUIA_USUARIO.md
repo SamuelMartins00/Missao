@@ -88,7 +88,7 @@ Pronto! Agora você tem todos os arquivos do sistema no seu computador.
 
 ## Como Configurar o Arquivo `.env`
 
-O arquivo `.env` guarda as informações de conexão com o banco de dados. Ele não vem junto com o projeto por segurança, então você precisa criá-lo.
+O arquivo `.env` guarda as informações de conexão com o banco de dados **e os usuários que vão acessar o sistema**. Ele não vem junto com o projeto por segurança, então você precisa criá-lo.
 
 1. Dentro da pasta `Missao`, crie um arquivo chamado `.env` (com o ponto no início).
 
@@ -103,26 +103,52 @@ O arquivo `.env` guarda as informações de conexão com o banco de dados. Ele n
 
    Ou simplesmente abra qualquer editor de texto (Bloco de Notas, VS Code, etc.) e salve um arquivo com o nome `.env` dentro da pasta `Missao`.
 
-2. Edite e cole o seguinte conteúdo dentro do arquivo:
-      **No terminal:**
+2. Edite o arquivo e cole o seguinte conteúdo dentro dele:
+
+   **No terminal:**
    ```bash
    # Linux / Mac
    nano .env
 
    # Windows (PowerShell)
    notepad .env
-   
-   cole:
-   
-   DB_HOST=db
-   DB_USER=cooperador
-   DB_PASSWORD=cooperador123
-   DB_NAME=igreja_db
    ```
 
-3. Salve o arquivo.
+   **Cole isto dentro do arquivo:**
+   ```env
+   DB_HOST=db
+   DB_USER=root
+   DB_PASSWORD=cooperador123
+   DB_NAME=igreja_db
 
-> **Atenção:** Esses valores já estão configurados para funcionar com o Docker. Não é necessário alterar nada.
+   MYSQL_ROOT_PASSWORD=cooperador123
+   MYSQL_DATABASE=igreja_db
+   MYSQL_USER=root
+   MYSQL_PASSWORD=cooperador123
+
+   SECRET_KEY=troque_por_um_codigo_aleatorio_longo
+
+   ADMIN_USUARIO=admin
+   ADMIN_SENHA=defina_uma_senha_forte
+
+   USUARIO_COMUM_USUARIO=membro
+   USUARIO_COMUM_SENHA=defina_outra_senha_forte
+   ```
+
+3. **Troque os valores de exemplo pelos seus.** O importante de entender em cada linha:
+
+   | O que é | O que fazer |
+   |---|---|
+   | `ADMIN_USUARIO` / `ADMIN_SENHA` | Defina o usuário e senha de quem vai **administrar** o sistema (criar, editar e excluir registros) |
+   | `USUARIO_COMUM_USUARIO` / `USUARIO_COMUM_SENHA` | Defina o usuário e senha de quem vai só **visualizar** os dados, sem poder alterar nada |
+   | `SECRET_KEY` | Uma sequência de letras e números aleatória, usada internamente pelo sistema para proteger o login. Pode ser qualquer texto longo e difícil de adivinhar — não precisa anotar nem lembrar dela depois |
+   | `DB_*` e `MYSQL_*` | Senhas internas do banco de dados — pode manter os valores de exemplo ou trocar, desde que `DB_PASSWORD` e `MYSQL_PASSWORD` sejam **iguais** |
+
+   > Esses dois usuários (`admin` e o usuário comum) são criados automaticamente dentro do sistema na primeira vez que ele é iniciado. Depois disso, essas quatro linhas (`ADMIN_*` e `USUARIO_COMUM_*`) não são mais necessárias e podem até ser apagadas do `.env` — mas não tem problema se ficarem.
+
+4. Salve o arquivo.
+
+> **Atenção:** Guarde o usuário e a senha que você escolheu para o admin e para o usuário comum — você vai usá-los para entrar no sistema mais adiante.
 
 ---
 
@@ -165,7 +191,18 @@ Após subir os containers, abra qualquer navegador (Chrome, Firefox, Edge…) e 
 http://localhost:5000
 ```
 
-Você verá o painel principal do sistema com todas as informações da comunidade.
+Você será levado direto para a **tela de login**. Digite o usuário e a senha que você definiu no arquivo `.env` (`ADMIN_USUARIO`/`ADMIN_SENHA` para acesso total, ou `USUARIO_COMUM_USUARIO`/`USUARIO_COMUM_SENHA` para acesso de visualização) e clique em **Entrar**.
+
+> Se aparecer a mensagem "Usuário ou senha incorretos", confira se digitou exatamente o que colocou no `.env` — letras maiúsculas/minúsculas fazem diferença.
+
+### Os dois tipos de acesso
+
+| Quem loga com... | Pode fazer |
+|---|---|
+| `ADMIN_USUARIO` / `ADMIN_SENHA` | Ver, **criar**, **editar** e **excluir** avisos, agradecimentos, pedidos e visitantes |
+| `USUARIO_COMUM_USUARIO` / `USUARIO_COMUM_SENHA` | Apenas **ver** as informações — sem botões de criar, editar ou excluir |
+
+Depois de logado, você verá seu nome de usuário no canto superior da tela, junto com o botão **Sair** — use-o para encerrar a sessão quando terminar de usar o sistema.
 
 ### Páginas disponíveis:
 
@@ -176,6 +213,11 @@ Você verá o painel principal do sistema com todas as informações da comunida
 | `http://localhost:5000/agradecimentos` | Agradecimentos enviados |
 | `http://localhost:5000/pedidos` | Pedidos de oração |
 | `http://localhost:5000/visitantes` | Registro de visitantes |
+
+### Editando ou excluindo um registro (somente para admin)
+
+- Para **editar**, clique no botão "Editar" ao lado do registro desejado, altere os campos e clique em "Salvar"
+- Para **excluir**, clique em "Deletar" — o sistema vai mostrar uma tela perguntando se você tem certeza, mostrando os dados do registro antes de remover de forma definitiva
 
 ---
 
@@ -206,3 +248,9 @@ docker-compose up -d
 
 **"Erro de permissão no Linux"**
 > Execute o comando `sudo usermod -aG docker $USER`, deslogue do sistema e logue novamente. Depois tente rodar o `docker-compose up -d` sem `sudo`.
+
+**"Usuário ou senha incorretos" na tela de login**
+> Confira se digitou exatamente o usuário e a senha que você colocou em `ADMIN_USUARIO`/`ADMIN_SENHA` ou `USUARIO_COMUM_USUARIO`/`USUARIO_COMUM_SENHA` no arquivo `.env`. Se ainda não conseguir entrar, confirme que essas variáveis estavam preenchidas no `.env` **antes** da primeira vez que você rodou `docker-compose up -d` — é nesse momento que os usuários são criados.
+
+**"Não vejo os botões de Editar e Deletar"**
+> Isso é esperado se você fez login com o usuário comum (`USUARIO_COMUM_USUARIO`). Esse perfil só pode visualizar os dados. Para criar, editar ou excluir registros, faça login com o usuário administrador (`ADMIN_USUARIO`).

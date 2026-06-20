@@ -25,18 +25,36 @@ O projeto também tem como objetivo o desenvolvimento de competências práticas
 |---|---|
 | **Front-end** | HTML5, Tailwind CSS, Jinja2 (templates) |
 | **Back-end** | Python 3.10, Flask 3.1.3 |
+| **Autenticação** | Sessão do Flask, senhas com hash SHA-256 |
 | **Banco de Dados** | MySQL 8.0 |
 | **Containerização** | Docker, Docker Compose |
 | **Variáveis de Ambiente** | python-dotenv |
 
 ---
 
+## Autenticação e Perfis de Acesso
+
+O sistema exige login para qualquer acesso e possui dois perfis de usuário:
+
+| Perfil | Pode visualizar | Pode criar | Pode editar | Pode excluir |
+|---|---|---|---|---|
+| **admin** | ✅ | ✅ | ✅ | ✅ |
+| **usuario** (comum) | ✅ | ❌ | ❌ | ❌ |
+
+- Quem não está logado é redirecionado para a tela de **login** (`/login`)
+- Quem tenta uma ação restrita sem ser admin recebe a página de **acesso negado** (HTTP 403)
+- O primeiro admin e o primeiro usuário comum são criados **automaticamente** na primeira inicialização do sistema, a partir de variáveis no arquivo `.env` (veja a seção [Como Configurar o `.env`](#como-configurar-o-env))
+
+---
+
 ## Funcionalidades Principais
 
-- **Avisos** — Cadastro e listagem de avisos da comunidade
-- **Agradecimentos** — Envio de agradecimentos
-- **Pedidos de Oração** — Cadastro e visualização dos pedidos
-- **Visitantes** — Registro de visitantes que participaram das reuniões
+- **Login e Logout** — Acesso protegido por usuário e senha
+- **Dois perfis de acesso** — Administrador (controle total) e Usuário comum (somente visualização)
+- **Avisos** — Cadastro, edição, exclusão (com confirmação) e listagem de avisos da comunidade
+- **Agradecimentos** — Envio, edição e exclusão de agradecimentos
+- **Pedidos de Oração** — Cadastro, edição, exclusão e visualização dos pedidos
+- **Visitantes** — Registro, edição e exclusão de visitantes que participaram das reuniões
 - **Painel Principal** — Dashboard unificado com todos os dados em uma única tela
 - **Deploy com Docker** — Ambiente totalmente containerizado para fácil implantação
 
@@ -65,12 +83,16 @@ Missao/
 │   │   └── 🖼️ visitantesmobile.png
 │   └── 🎨 style.css
 ├── 📁 templates
+│   ├── 🌐 acesso_negado.html
 │   ├── 🌐 agradecimentos.html
 │   ├── 🌐 avisos.html
 │   ├── 🌐 base.html
+│   ├── 🌐 confirmar_deletar.html
 │   ├── 🌐 index.html
+│   ├── 🌐 login.html
 │   ├── 🌐 pedidos.html
 │   └── 🌐 visitantes.html
+├── ⚙️ .env.example
 ├── ⚙️ .gitignore
 ├── 🐳 Dockerfile
 ├── 📝 GUIA_USUARIO.md
@@ -124,14 +146,31 @@ flask run
 
 ## Como Configurar o `.env`
 
-Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
+Crie um arquivo `.env` na raiz do projeto (ou copie o `.env.example` já incluído no repositório) com as seguintes variáveis:
 
 ```env
-MYSQL_ROOT_PASSWORD= sua_senha_root
-DB_HOST= localhost
-DB_USER= seu_usuario
-DB_PASSWORD= sua_senha
-DB_NAME= igreja_db
+# Banco de dados
+DB_HOST=db
+DB_USER=root
+DB_PASSWORD=defina_uma_senha_forte
+DB_NAME=igreja
+
+# Usadas pelo container do MySQL (docker-compose)
+MYSQL_ROOT_PASSWORD=defina_uma_senha_forte
+MYSQL_DATABASE=igreja
+MYSQL_USER=root
+MYSQL_PASSWORD=defina_uma_senha_forte
+
+# Flask — chave usada para assinar a sessão de login
+SECRET_KEY=
+
+# Admin inicial (criado automaticamente na primeira execução)
+ADMIN_USUARIO=admin
+ADMIN_SENHA=defina_uma_senha_forte
+
+# Usuário comum inicial — só visualiza os dados (criado automaticamente)
+USUARIO_COMUM_USUARIO=membro
+USUARIO_COMUM_SENHA=defina_uma_senha_forte
 ```
 
 > **Nunca comite o arquivo `.env` no repositório.** Ele já está listado no `.gitignore`.
@@ -139,9 +178,16 @@ DB_NAME= igreja_db
 | Variável | Descrição | Exemplo |
 |---|---|---|
 | `DB_HOST` | Host do banco de dados | `localhost` ou `db` (Docker) |
-| `DB_USER` | Usuário do MySQL | `cooperador` |
-| `DB_PASSWORD` | Senha do usuário MySQL | `cooperador123` |
-| `DB_NAME` | Nome do banco de dados | `igreja_db` |
+| `DB_USER` | Usuário do MySQL | `root` |
+| `DB_PASSWORD` | Senha do usuário MySQL | `minhaSenhaForte123` |
+| `DB_NAME` | Nome do banco de dados | `igreja` |
+| `SECRET_KEY` | Chave usada pelo Flask para assinar o cookie de sessão. Gere uma com `python3 -c "import secrets; print(secrets.token_hex(32))"` | `a3f29c8e...` (64 caracteres) |
+| `ADMIN_USUARIO` | Nome de usuário do administrador criado automaticamente no primeiro start | `admin` |
+| `ADMIN_SENHA` | Senha do administrador (vira hash no banco, nunca fica em texto puro) | `minhaSenhaForte123` |
+| `USUARIO_COMUM_USUARIO` | Nome de usuário do perfil somente-leitura criado automaticamente | `membro` |
+| `USUARIO_COMUM_SENHA` | Senha do usuário comum (também vira hash) | `outraSenhaForte123` |
+
+> As variáveis `ADMIN_USUARIO`/`ADMIN_SENHA` e `USUARIO_COMUM_USUARIO`/`USUARIO_COMUM_SENHA` só são necessárias **na primeira inicialização**, quando a tabela `usuarios` ainda está vazia. Depois de confirmar que o login de ambos funciona, você pode remover essas quatro linhas do `.env` sem afetar o funcionamento do sistema — os usuários já estarão salvos no banco.
 
 ---
 
@@ -196,10 +242,20 @@ docker-compose down
 
 Após subir a aplicação (com ou sem Docker), acesse pelo navegador:
 
-| Rota | Descrição |
-|---|---|
-| `http://localhost:5000/` | Painel principal (dashboard) |
-| `http://localhost:5000/avisos` | Gerenciar avisos |
-| `http://localhost:5000/agradecimentos` | Gerenciar agradecimentos |
-| `http://localhost:5000/pedidos` | Gerenciar pedidos de oração |
-| `http://localhost:5000/visitantes` | Gerenciar visitantes |
+```
+http://localhost:5000
+```
+
+Você será redirecionado automaticamente para a tela de **login**. Use o usuário e senha definidos em `ADMIN_USUARIO`/`ADMIN_SENHA` (acesso total) ou `USUARIO_COMUM_USUARIO`/`USUARIO_COMUM_SENHA` (somente visualização) no seu `.env`.
+
+| Rota | Descrição | Acesso |
+|---|---|---|
+| `/login` | Tela de login | Público |
+| `/logout` | Encerra a sessão atual | Qualquer usuário logado |
+| `/` | Painel principal (dashboard) | Qualquer usuário logado |
+| `/avisos` | Listar e cadastrar avisos | Listar: todos · Cadastrar: admin |
+| `/agradecimentos` | Listar e cadastrar agradecimentos | Listar: todos · Cadastrar: admin |
+| `/pedidos` | Listar e cadastrar pedidos de oração | Listar: todos · Cadastrar: admin |
+| `/visitantes` | Listar e cadastrar visitantes | Listar: todos · Cadastrar: admin |
+
+A edição e exclusão de registros são feitas pelos botões **Editar** e **Deletar** dentro de cada listagem (visíveis apenas para o perfil admin) — a exclusão sempre passa por uma página de confirmação antes de remover o dado definitivamente.
