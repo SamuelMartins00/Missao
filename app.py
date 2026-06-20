@@ -22,6 +22,7 @@ def get_connection():
     return pool.get_connection()
 
 @app.route('/', methods=['GET'])
+@login_required
 def index():
     conexao = get_connection()
     cursor = conexao.cursor(dictionary=True)
@@ -56,6 +57,7 @@ def index():
         conexao.close()
 
 @app.route('/agradecimentos', methods=['POST', 'GET'])
+@login_required
 def gracas():
 
     if request.method == 'POST':
@@ -97,6 +99,7 @@ def gracas():
         conexao.close()
 
 @app.route('/agradecimentos/editar/<int:id>', methods=['POST'])
+@admin_required
 def editar_agradecimento(id):   
     nome = request.form['nome']
     motivo = request.form['motivo']
@@ -119,6 +122,7 @@ def editar_agradecimento(id):
     return redirect('/agradecimentos')
 
 @app.route('/agradecimentos/confirmar-deletar/<int:id>', methods=['GET'])
+@admin_required
 def confirmar_deletar_agradecimento(id):
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
@@ -142,6 +146,7 @@ def confirmar_deletar_agradecimento(id):
         conexao.close()
 
 @app.route('/agradecimentos/deletar/<int:id>', methods=['POST'])
+@admin_required
 def deletar_agradecimento(id):
     conexao = get_connection()
     my_cursor = conexao.cursor()
@@ -161,6 +166,7 @@ def deletar_agradecimento(id):
     return redirect('/agradecimentos') 
 
 @app.route('/avisos', methods=['POST', 'GET'])
+@login_required
 def avisos():
 
     if request.method == 'POST':
@@ -202,6 +208,7 @@ def avisos():
         conexao.close()
 
 @app.route('/avisos/editar/<int:id>', methods=['POST'])
+@login_required
 def editar_avisos(id):  
     titulo = request.form['titulo']
     descricao = request.form['descricao']
@@ -224,6 +231,7 @@ def editar_avisos(id):
     return redirect('/avisos')
 
 @app.route('/avisos/confirmar-deletar/<int:id>', methods=['GET'])
+@admin_required
 def confirmar_deletar_avisos(id):
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
@@ -247,6 +255,7 @@ def confirmar_deletar_avisos(id):
         conexao.close()
 
 @app.route('/avisos/deletar/<int:id>', methods=['POST'])
+@admin_required
 def deletar_avisos(id):
     conexao = get_connection()
     my_cursor = conexao.cursor()
@@ -266,6 +275,7 @@ def deletar_avisos(id):
     return redirect('/avisos')
 
 @app.route('/pedidos', methods=['POST', 'GET'])
+@login_required
 def pedidos():
 
     if request.method == 'POST':
@@ -307,6 +317,7 @@ def pedidos():
         conexao.close()
 
 @app.route('/pedidos/editar/<int:id>', methods=['POST'])
+@admin_required
 def editar_pedidos(id):
     nome = request.form['nome']
     motivo = request.form['motivo']
@@ -329,6 +340,7 @@ def editar_pedidos(id):
     return redirect('/pedidos')
 
 @app.route('/pedidos/confirmar-deletar/<int:id>', methods=['GET'])
+@admin_required
 def confirmar_deletar_pedidos(id):
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
@@ -352,6 +364,7 @@ def confirmar_deletar_pedidos(id):
         conexao.close()
 
 @app.route('/pedidos/deletar/<int:id>', methods=['POST'])
+@admin_required
 def deletar_pedidos(id):
     conexao = get_connection()
     my_cursor = conexao.cursor()
@@ -371,6 +384,7 @@ def deletar_pedidos(id):
     return redirect('/pedidos')
 
 @app.route('/visitantes', methods=['POST', 'GET'])
+@login_required
 def visitantes():
 
     if request.method == 'POST':
@@ -413,6 +427,7 @@ def visitantes():
         conexao.close()
 
 @app.route('/visitantes/editar/<int:id>', methods=['POST'])
+@admin_required
 def editar_visitantes(id):
     nome = request.form['nome']
     descricao = request.form['descricao']
@@ -435,6 +450,7 @@ def editar_visitantes(id):
     return redirect('/visitantes')
 
 @app.route('/visitantes/confirmar-deletar/<int:id>', methods=['GET'])
+@admin_required
 def confirmar_deletar_visitantes(id):
     conexao = get_connection()
     my_cursor = conexao.cursor(dictionary=True)
@@ -458,6 +474,7 @@ def confirmar_deletar_visitantes(id):
         conexao.close()
 
 @app.route('/visitantes/deletar/<int:id>', methods=['POST'])
+@admin_required
 def deletar_visitantes(id):
     conexao = get_connection()
     my_cursor = conexao.cursor()

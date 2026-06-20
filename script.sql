@@ -1,37 +1,34 @@
 create table agradecimentos (
-	id_agr int auto_increment primary key,
-    nome_agr varchar(252),
-    motivo_agr text,
-    data_agr datetime default current_timestamp 
+	id_agr        INT AUTO_INCREMENT PRIMARY KEY,
+    nome_agr      VARCHAR(252),
+    motivo_agr    TEXT,
+    data_agr      DATETIME DEFAULT CURRENT_TIMESTAMP 
 );
 
 create table avisos (
-	id_avi int auto_increment primary key,
-    titulo_avi varchar(252),
-    descricao_avi text,
-    data_avi datetime default current_timestamp 
+	id_avi        INT AUTO_INCREMENT PRIMARY KEY,
+    titulo_avi    VARCHAR(252),
+    descricao_avi TEXT,
+    data_avi      DATETIME DEFAULT CURRENT_TIMESTAMP 
 );
 
 create table pedidos (
-	id_ped int auto_increment primary key,
-	nome_ped varchar(252),
-	motivo_ped text,
-	data_ped datetime default current_timestamp 
+	id_ped     INT AUTO_INCREMENT PRIMARY KEY,
+	nome_ped   VARCHAR(252),
+	motivo_ped TEXT,
+	data_ped   DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
 create table visitantes (
-	id_vis int auto_increment primary key,
-    nome_vis varchar(252),
-    descricao_vis text,
-    data_vis datetime default current_timestamp 
+	id_vis        INT AUTO_INCREMENT PRIMARY KEY,
+    nome_vis      VARCHAR(252),
+    descricao_vis TEXT,
+    data_vis      DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-create table usuarios (
-    id      int auto_increment primary key,
-    usuario varchar(50) not null unique,
-    senha   char(64) not null,
-    perfil  ENUM('admin', 'usuario') not null default 'usuario',
-    criado  datetime default current_timestamp
+CREATE TABLE usuarios (
+    id_usu  INT AUTO_INCREMENT PRIMARY KEY,
+    usuario_usu VARCHAR(50)  NOT NULL UNIQUE,
+    senha_usu   CHAR(64)     NOT NULL,           
+    perfil_usu  ENUM('admin', 'usuario') NOT NULL DEFAULT 'usuario'
 );
-
-insert into usuarios (usuario, senha, perfil) values ('admin', SHA2('admin', 256), 'admin');
