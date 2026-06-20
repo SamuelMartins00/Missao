@@ -7,6 +7,7 @@
     <p class="text-slate-500 mt-1 text-sm">Registre o agradecimento</p>
 </div>
 
+{% if session.perfil == "admin" %}
 <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-10">
     <form action="/agradecimentos" method="POST" class="flex flex-col gap-5">
 
@@ -31,6 +32,7 @@
 
     </form>
 </div>
+{% endif %}
 
 <div>
     <h2 class="text-lg font-semibold text-slate-700 mb-4">Culto em Ação de Graça registrados</h2>
@@ -68,6 +70,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-slate-400">{{ a.data_agr }}</span>
+                    {% if session.perfil == "admin" %}
                     <a href="/agradecimentos?editar={{ a.id_agr }}"
                         class="text-sm bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg transition">
                         Editar
@@ -76,6 +79,7 @@
                         class="text-sm bg-red-50 hover:bg-red-100 text-red-600 px-3 py-1.5 rounded-lg transition">
                         Deletar
                     </a>
+                    {% endif %}
                 </div>
             </div>
             {% endif %}
