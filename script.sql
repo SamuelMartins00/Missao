@@ -32,3 +32,18 @@ CREATE TABLE usuarios (
     senha_usu   CHAR(64)     NOT NULL,           
     perfil_usu  ENUM('admin', 'usuario') NOT NULL DEFAULT 'usuario'
 );
+
+DELIMITER //
+
+CREATE EVENT IF NOT EXISTS limpar_dados
+ON SCHEDULE EVERY 1 HOUR
+STARTS CURRENT_TIMESTAMP
+DO
+BEGIN
+    DELETE FROM agradecimentos WHERE data_agr < NOW() - INTERVAL 4 HOUR;
+    DELETE FROM avisos         WHERE data_avi < NOW() - INTERVAL 4 HOUR;
+    DELETE FROM pedidos        WHERE data_ped < NOW() - INTERVAL 4 HOUR;
+    DELETE FROM visitantes     WHERE data_vis < NOW() - INTERVAL 4 HOUR;
+END //
+
+DELIMITER ;

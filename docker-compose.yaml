@@ -4,6 +4,7 @@ services:
     image: mysql:8.0
     container_name: igreja_db
     restart: always
+    command: --event-scheduler=ON
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
