@@ -123,8 +123,6 @@ O arquivo `.env` guarda as informações de conexão com o banco de dados **e os
 
    MYSQL_ROOT_PASSWORD=cooperador123
    MYSQL_DATABASE=igreja_db
-   MYSQL_USER=root
-   MYSQL_PASSWORD=cooperador123
 
    SECRET_KEY=troque_por_um_codigo_aleatorio_longo
 

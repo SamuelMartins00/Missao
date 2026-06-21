@@ -158,8 +158,6 @@ DB_NAME=igreja
 # Usadas pelo container do MySQL (docker-compose)
 MYSQL_ROOT_PASSWORD=defina_uma_senha_forte
 MYSQL_DATABASE=igreja
-MYSQL_USER=root
-MYSQL_PASSWORD=defina_uma_senha_forte
 
 # Flask — chave usada para assinar a sessão de login
 SECRET_KEY=
